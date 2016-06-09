@@ -42,7 +42,8 @@ The goto utility supports the following options:
 
 --find    Lists all keys, along with their values, starting with the given argument.
 
---remove  For each argument remove all matching keys after printing them and asking for confirmation.
+--remove  For each argument remove all matching keys after printing them and asking
+          for confirmation.
 
 --help    print on the standard output a small description of goto's usage.
 
