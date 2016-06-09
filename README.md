@@ -1,10 +1,12 @@
 # goto
 A Unix file system's version of the c-family's goto idiom.
 
-SYNOPSIS
+###SYNOPSIS
+
        goto [KEY] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]
 
-DESCRIPTION
+###DESCRIPTION
+
        The  goto  utility  shall  change  the working directory by using the given KEY's associated
        value (by default the key is __DEFAULT__) in its .goto_list file.
 
@@ -15,7 +17,8 @@ DESCRIPTION
        following alias in the .bashrc of the user:
           alias goto="source _goto"
 
-OPTIONS
+###OPTIONS
+
        The goto utility supports the following options:
 
        --list    Lists all the KEYs contained in the .goto_list file.
@@ -34,10 +37,12 @@ OPTIONS
 
        --help    print on the standard output a small description of goto's usage.
 
-SEE ALSO
+###SEE ALSO
+
        cd(P), sed(1)
 
-AUTHOR
+###AUTHOR
+
        Bastien Penavayre ( bastienPenava@gmail.com )
 
 1.0                                         06 June 2016
