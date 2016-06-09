@@ -20,15 +20,18 @@
 
 _goto()
 {
-    local cur prev isRem
+    local cur prev isRemOrFind
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
-    if [ $COMP_CWORD -eq 2 ] && [ "${COMP_WORDS[COMP_CWORD-1]}" == "--remove" ]; then
-        isRem=42;
-    else
-        isRem=0;
+    isRemOrFind=0
+    if [ $COMP_CWORD -eq 2 ]; then
+       case "${COMP_WORDS[COMP_CWORD-1]}" in
+            --remove|--find)
+                isRemOrFind=42;
+                ;;
+       esac;
     fi;
-    if [ $COMP_CWORD -ge 2 ] && [ $isRem -eq 0 ]; then
+    if [ $COMP_CWORD -ge 2 ] && [ $isRemOrFind -eq 0 ]; then
         return 1
     fi;
     if [[ ${cur} == -* ]]; then
