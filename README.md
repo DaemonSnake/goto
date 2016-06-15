@@ -8,11 +8,13 @@ A Unix file system's version of the c-family's goto idiom.
 ###DESCRIPTION
 
        The  goto  utility  shall  change  the working directory by using the given KEY's associated
-       value (by default the key is __DEFAULT__) in its .goto_list file. If the KEY is finished by
-       a '/' character then the following text will be used as subpath for the keys directory.
+       value (by default the key is __DEFAULT__) in its .goto_list file.
 
        This file contains on each line a KEY and a PATH separated by a space. The file  is  located
        in the home directory of the calling user (~/.goto_list).
+       
+       If the KEY is finished by a '/' character then the following text
+       will be used as subpath for the keys directory.
 
        For  its  update  on the working directory to be applied, goto requires to be defined as the
        following alias in the .bashrc of the user:
