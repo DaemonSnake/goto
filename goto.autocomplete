@@ -18,47 +18,60 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-_goto()
+_list_goto_keys()
 {
-    local cur isRemOrFind
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    isRemOrFind=0
-    if [ $COMP_CWORD -eq 2 ]; then
-       case "${COMP_WORDS[COMP_CWORD-1]}" in
-            --remove|--find)
-                isRemOrFind=42;
-                ;;
-       esac;
-    fi;
-    if [ $COMP_CWORD -ge 2 ] && [ $isRemOrFind -eq 0 ]; then
-        return 1
-    fi;
-    if [[ ${cur} == -* ]]; then
-        res="$(echo "--help --add --setdef --list --find --remove" | tr -s ' ' '\n' | grep -e ${cur})"
-        compopt +o nospace
-    else
-        echo ${cur} | grep '/' >/dev/null
-        if [ $? -ne 0 ]; then
-            if [ `echo $cur | wc -m` == "1" ]; then
-                res="$(goto --list)"
-            else
-                res="$(goto --list | grep $cur)"
-            fi;
-        else
-            local key path subpath tofind;
-            IFS='/' read -r key subpath <<< "$cur";
-            if [ `echo $key | wc -m` == "1" ]; then
-                res=""
-            else
-                compopt -o nospace;
-                path="`goto --find $key | awk '{print $2}'`"
-                res="$(echo $path/$subpath*/ | tr -s ' ' '\n' | awk -F '/' '{print $(NF-1)}')";
-            fi;
-        fi;
-    fi;
-    COMPREPLY=($(compgen -W "$res"))
-    return 0
+    res="$(goto --list | grep -e "$cur")"
 }
 
-complete -o nospace -F _goto goto
+_goto()
+{
+    local res cur prev opts path key
+    
+    COMPREPLY=()
+    cur=`_get_cword`
+    opts="--help --add --setdef --list --find --remove"
+    res=''
+    if [ $COMP_CWORD -eq 1 ]; then
+        case $cur in
+            -*)
+                res="$(compgen -W "$opts" | grep -e $cur)"
+                ;;
+            */*)
+                IFS=' ' read -r key path <<< $cur;
+                ## SUBPATH HANDLING
+                ;;
+            *)
+                _list_goto_keys
+                compopt -o nospace
+                ;;
+        esac;
+    else
+        case ${COMP_WORDS[1]} in
+            --help|--list)
+                return 1;
+                ;;
+            --add)
+                if [ $COMP_CWORD -ne 3 ]; then
+                    return 1;
+                fi;
+                ##PATH AUTCOMP FROM LOCAL DIR
+                ;;
+            --setdef)
+                if [ $COMP_CWORD -ge 2 ]; then
+                    return 1;
+                fi;
+                ##PATH AUTCOMP FROM LOCAL DIR
+                ;;
+            --find|--remove)
+                if [ $COMP_CWORD -ge 3 ]; then
+                    return 1;
+                fi;
+                _list_goto_keys
+                ;;
+        esac;
+    fi;
+    COMPREPLY=($(compgen -W "$res"));
+    return 0;
+}
+
+complete -F _goto goto
