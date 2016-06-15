@@ -3,12 +3,13 @@ A Unix file system's version of the c-family's goto idiom.
 
 ###SYNOPSIS
 
-       goto [KEY] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]
+       goto [KEY[/SUBPATH]] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]
 
 ###DESCRIPTION
 
        The  goto  utility  shall  change  the working directory by using the given KEY's associated
-       value (by default the key is __DEFAULT__) in its .goto_list file.
+       value (by default the key is __DEFAULT__) in its .goto_list file. If the KEY is finished by
+       a '/' character then the following text will be used as subpath for the keys directory.
 
        This file contains on each line a KEY and a PATH separated by a space. The file  is  located
        in the home directory of the calling user (~/.goto_list).
@@ -36,6 +37,25 @@ A Unix file system's version of the c-family's goto idiom.
                  for confirmation.
 
        --help    print on the standard output a small description of goto's usage.
+
+###EXAMPLES
+
+        $ goto --add gotoProject;
+        $ mkdir subfolder;
+        $ cd;
+        $ goto gotoProject/subfolder;
+        $ pwd;
+        ~/folder/projects/goto/subfolder
+        $ goto --setdef;
+        $ cd ;
+        $ goto;
+        $ pwd
+        ~/folder/projects/goto/subfolder;
+        $ goto list;
+        gotoProject
+        __DEFAULT__
+        $ goto --find gotoProj;
+        gotoProject /home/user/folder/projects/goto/subfolder
 
 ###SEE ALSO
 

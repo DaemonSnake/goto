@@ -20,9 +20,9 @@
 .SH NAME
 goto \- jump from working directory to the associated value of the given key
 .SH SYNOPSIS
-goto [KEY] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]
+goto [KEY[/SUBPATH]] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]
 .SH DESCRIPTION
-The goto utility shall change the working directory by using the given KEY's associated value (by default the key is __DEFAULT__) in its .goto_list file.
+The goto utility shall change the working directory by using the given KEY's associated value (by default the key is __DEFAULT__) in its .goto_list file. If the KEY is finished by a '/' character then the following text will be used as subpath for the keys directory.
 
 This file contains on each line a KEY and a PATH separated by a space. The file is located in the home directory of the calling user (~/.goto_list).
 
@@ -47,9 +47,29 @@ The goto utility supports the following options:
 
 --help    print on the standard output a small description of goto's usage.
 
+.SH EXAMPLES
+.PP
+.nf
+$ goto --add gotoProject;
+$ mkdir subfolder;
+$ cd;
+$ goto gotoProject/subfolder;
+$ pwd;
+~/folder/projects/goto/subfolder
+$ goto --setdef;
+$ cd ;
+$ goto;
+$ pwd
+~/folder/projects/goto/subfolder;
+$ goto list;
+gotoProject
+__DEFAULT__
+$ goto --find gotoProj;
+gotoProject /home/user/folder/projects/goto/subfolder
+
 .SH SEE ALSO
 cd(P), sed(1)
 .SH BUGS
-No known bugs.
+The autocomplete script doesn't yet correctly handle on 'goto KEY/SUBPATH' the autocompletion on the SUBPATH
 .SH AUTHOR
 Bastien Penavayre ( bastienPenava@gmail.com )

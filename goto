@@ -23,7 +23,7 @@ user_folder=$HOME
 
 if [ ! -z $SUDO_USER ];
 then
-    user_folder="~$SUDO_USER";
+    user_folder="$(echo ~$SUDO_USER)";
 fi;
 
 function __goto_find()
@@ -70,18 +70,19 @@ function __goto_add()
 
 function __goto_list()
 {
-    echo "$user_folder"
     cat $user_folder/.goto_list | awk '{print $1}'
 }
 
 function __goto_goto()
 {
-    local result="$(sed -n "/^$1/p" $user_folder/.goto_list)"
+    local key path
+    IFS='/' read -r key path <<< "$1";
+    local result=$(sed -n "/^$key/p" $user_folder/.goto_list)
     if [ -z "$result" ]
     then
-        echo "not such key to goto: \"$1\"" > /dev/stderr;
+        echo "not such key to goto: \"$key\"" > /dev/stderr;
     else
-        cd $(echo $result | uniq | awk '{print $2}')
+        cd "$(echo $result | uniq | awk '{print $2}')/$path"
     fi;
 }
 
@@ -89,7 +90,7 @@ function __goto_iterate()
 {
     case $1 in
         --help)
-            echo "usage: goto [KEY] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]"
+            echo "usage: goto [KEY/SUBPATH] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]"
             echo ""
             echo "description:"
             echo " jump to the associated value of the given KEY if given otherwise of __DEFAULT__"

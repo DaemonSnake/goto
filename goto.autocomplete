@@ -20,7 +20,7 @@
 
 _goto()
 {
-    local cur prev isRemOrFind
+    local cur isRemOrFind
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     isRemOrFind=0
@@ -35,11 +35,30 @@ _goto()
         return 1
     fi;
     if [[ ${cur} == -* ]]; then
-        res="$(echo "--help --add --setdef --list --find --remove" | tr -s "[[:space:]]" '\n' | grep -e ${cur})"
+        res="$(echo "--help --add --setdef --list --find --remove" | tr -s ' ' '\n' | grep -e ${cur})"
+        compopt +o nospace
     else
-        res="$(sed -n "/^${cur}/p" ~/.goto_list | awk '{print $1}')"
+        echo ${cur} | grep '/' >/dev/null
+        if [ $? -ne 0 ]; then
+            if [ `echo $cur | wc -m` == "1" ]; then
+                res="$(goto --list)"
+            else
+                res="$(goto --list | grep $cur)"
+            fi;
+        else
+            local key path subpath tofind;
+            IFS='/' read -r key subpath <<< "$cur";
+            if [ `echo $key | wc -m` == "1" ]; then
+                res=""
+            else
+                compopt -o nospace;
+                path="`goto --find $key | awk '{print $2}'`"
+                res="$(echo $path/$subpath*/ | tr -s ' ' '\n' | awk -F '/' '{print $(NF-1)}')";
+            fi;
+        fi;
     fi;
     COMPREPLY=($(compgen -W "$res"))
     return 0
 }
-complete -F _goto goto
+
+complete -o nospace -F _goto goto
