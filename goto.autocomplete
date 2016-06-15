@@ -65,7 +65,10 @@ _goto()
                 fi;
                 return 0;
                 ;;
-            --find|--remove)
+            --remove)
+                _list_goto_keys
+                ;;
+            --find)
                 if [ $COMP_CWORD -ge 3 ]; then
                     return 1;
                 fi;

@@ -19,16 +19,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-user_folder=$HOME
+user_file=$HOME/.goto_list
 
 if [ ! -z $SUDO_USER ];
 then
-    user_folder="$(echo ~$SUDO_USER)";
+    user_file="$(echo ~$SUDO_USER/.goto_list)";
 fi;
+
+user_file=`eval echo $user_file`;
 
 function __goto_find()
 {
-    cat $user_folder/.goto_list | grep "^$1";
+    grep "^$1" $user_file;
 }
 
 function __goto_remove()
@@ -36,7 +38,7 @@ function __goto_remove()
     for arg in $@;
     do
         echo "The following entries are about to be removed:"
-        cat $user_folder/.goto_list | grep "^$arg"
+        grep "^$arg" "$user_file"
         read -p "Are you sure ? (y/n): " -n 1 choice
         echo ""
         case "$choice" in
@@ -46,7 +48,7 @@ function __goto_remove()
                 continue
                 ;;
         esac;
-        sed -i '/^'"$arg"'/d' $user_folder/.goto_list;
+        sed -i '/^'"$arg"'/d' $user_file;
     done;
 }
 
@@ -64,20 +66,20 @@ function __goto_add()
         fi;
     fi;
     
-    sed -i '/^'"$name"'/d' $user_folder/.goto_list
-    echo "$name $folder" >> $user_folder/.goto_list
+    sed -i '/^'"$name"'/d' $user_file
+    echo "$name $folder" >> $user_file
 }
 
 function __goto_list()
 {
-    cat $user_folder/.goto_list | awk '{print $1}'
+    cat "$user_file" | awk '{print $1}'
 }
 
 function __goto_goto()
 {
     local key path
     IFS='/' read -r key path <<< "$1";
-    local result=$(sed -n "/^$key/p" $user_folder/.goto_list)
+    local result=$(sed -n "/^$key/p" $user_file)
     if [ -z "$result" ]
     then
         echo "not such key to goto: \"$key\"" > /dev/stderr;

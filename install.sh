@@ -19,6 +19,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+function sudo_bashrc()
+{
+}
+
 function install()
 {
     local user_folder=$HOME;
@@ -39,6 +43,10 @@ function install()
     if [ $? -ne 0 ]; then
         echo "alias goto=\"source _goto\"" >> $user_folder/.bashrc;
     fi;
+    # grep "alias goto=\"source _goto\"" ~root/.bashrc > /dev/null 2> /dev/null;
+    # if [ $? -ne 0 ]; then
+    #     echo "alias goto=\"source _goto\"" >> ~root/.bashrc;
+    # fi;
 }
 
 install;
