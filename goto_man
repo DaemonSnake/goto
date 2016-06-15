@@ -70,6 +70,6 @@ gotoProject /home/user/folder/projects/goto/subfolder
 .SH SEE ALSO
 cd(P), sed(1)
 .SH BUGS
-The autocomplete script doesn't yet handle the autocompletion on the path arguments, only on keys and options.
+The autocomplete script doesn't yet handle the autocompletion on the subpath argument of keys.
 .SH AUTHOR
 Bastien Penavayre ( bastienPenava@gmail.com )

@@ -1,3 +1,4 @@
+
 # Copyright (C) 2016  Bastien Penavayre
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,10 +26,10 @@ _list_goto_keys()
 
 _goto()
 {
-    local res cur prev opts path key
+    local res cur prev opts path
     
     COMPREPLY=()
-    cur=`_get_cword`
+    _get_comp_words_by_ref -n = cur
     opts="--help --add --setdef --list --find --remove"
     res=''
     if [ $COMP_CWORD -eq 1 ]; then
@@ -37,7 +38,9 @@ _goto()
                 res="$(compgen -W "$opts" | grep -e $cur)"
                 ;;
             */*)
-                IFS=' ' read -r key path <<< $cur;
+                IFS='/' read -r res path <<< $cur;
+
+                ## _goto --find $res | awk '{print $NF}'
                 ## SUBPATH HANDLING
                 ;;
             *)
@@ -51,16 +54,16 @@ _goto()
                 return 1;
                 ;;
             --add)
-                if [ $COMP_CWORD -ne 3 ]; then
-                    return 1;
-                fi;
-                ##PATH AUTCOMP FROM LOCAL DIR
+                if [ $COMP_CWORD -eq 3 ]; then
+                    _cd $cur
+                fi
+                return 0;
                 ;;
             --setdef)
-                if [ $COMP_CWORD -ge 2 ]; then
-                    return 1;
+                if [ $COMP_CWORD -eq 2 ]; then
+                    _cd $cur
                 fi;
-                ##PATH AUTCOMP FROM LOCAL DIR
+                return 0;
                 ;;
             --find|--remove)
                 if [ $COMP_CWORD -ge 3 ]; then
