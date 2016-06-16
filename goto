@@ -19,15 +19,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-user_file=$HOME/.goto_list
-
-if [ ! -z $SUDO_USER ];
-then
-    user_file="$(echo ~$SUDO_USER/.goto_list)";
-fi;
-
-user_file=`eval echo $user_file`;
-
 function __goto_find()
 {
     grep "^$1" $user_file;
@@ -77,36 +68,45 @@ function __goto_list()
 
 function __goto_goto()
 {
-    local key path
-    IFS='/' read -r key path <<< "$1";
+    local key=$1 path=$2
+    # IFS='/' read -r key path <<< "$1"; #for when autocomplete will work with KEY/SUBPATH
     local result=$(sed -n "/^$key/p" $user_file)
     if [ -z "$result" ]
     then
-        echo "not such key to goto: \"$key\"" > /dev/stderr;
+        if [ $key == "__DEFAULT__" ]; then
+            echo "default dirrectory not set : use --setdef" > /dev/stderr;
+        else
+            echo "not such key to goto: \"$key\"" > /dev/stderr;
+        fi;
     else
         cd "$(echo $result | uniq | awk '{print $2}')/$path"
     fi;
+}
+
+function __goto_help()
+{
+    echo "usage: goto [KEY/SUBPATH] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]
+
+description:
+ jump to the associated value of the given KEY if given otherwise of __DEFAULT__
+
+commands:
+ KEY                  search the value associated with KEY and use 'cd' on it
+ --list               list all the possible keys to use
+ --add NAME [PATH]    adds a new key NAME with the value of PATH if it's given
+                      otherwise use the current dirrectory
+ --setdef [PATH]      set default goto location with the value of PATH if it's given
+                      otherwise use the current dirrectory
+ --find NAME          outputs all the keys starting with NAME along with their path
+ --remove NAMES...    for each argument lists all the matching lines and asks if you wish to delete all of those
+ --help               print this message";
 }
 
 function __goto_iterate()
 {
     case $1 in
         --help)
-            echo "usage: goto [KEY/SUBPATH] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]"
-            echo ""
-            echo "description:"
-            echo " jump to the associated value of the given KEY if given otherwise of __DEFAULT__"
-            echo ""
-            echo "commands:"
-            echo " KEY                  search the value associated with KEY and use 'cd' on it"
-            echo " --list               list all the possible keys to use"
-            echo " --add NAME [PATH]    adds a new key NAME with the value of PATH if it's given"
-            echo "                      otherwise use the current dirrectory"
-            echo " --setdef [PATH]      set default goto location with the value of PATH if it's given"
-            echo "                      otherwise use the current dirrectory"
-            echo " --find NAME          outputs all the keys starting with NAME along with their path"
-            echo " --remove NAMES...    for each argument lists all the matching lines and asks if you wish to delete all of those"
-            echo " --help               print this message"
+            __goto_help
             ;;
         --add)
             __goto_add $2 $3
@@ -124,14 +124,27 @@ function __goto_iterate()
             __goto_remove "${@:2}"
             ;;
         *)
-            __goto_goto $1
+            __goto_goto $1 $2
             ;;
     esac
 }
 
-if [ $# -eq 0 ];
-then
-    __goto_goto __DEFAULT__
-else
-    __goto_iterate $@;
-fi;
+function __launch_goto()
+{
+    local user_file=$HOME/.goto_list
+    if [ ! -z $SUDO_USER ];
+    then
+        user_file="$(echo ~$SUDO_USER/.goto_list)";
+    fi;
+    user_file=`eval echo $user_file`;
+
+    
+    if [ $# -eq 0 ];
+    then
+        __goto_goto __DEFAULT__
+    else
+        __goto_iterate $@;
+    fi;
+}
+
+__launch_goto $@;

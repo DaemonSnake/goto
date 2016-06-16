@@ -13,8 +13,8 @@ A Unix file system's version of the c-family's goto idiom.
        This file contains on each line a KEY and a PATH separated by a space. The file  is  located
        in the home directory of the calling user (~/.goto_list).
        
-       If the KEY is finished by a '/' character then the following text
-       will be used as subpath for the keys directory.
+       If the KEY is followed by a path then it will be used as subpath
+       for the keys directory.
 
        For  its  update  on the working directory to be applied, goto requires to be defined as the
        following alias in the .bashrc of the user:

@@ -24,32 +24,27 @@ _list_goto_keys()
     res="$(goto --list | grep -e "$cur")"
 }
 
-_goto()
+_autocomplete_goto()
 {
-    local res cur prev opts path
+    local res cur prev opts path first
     
     COMPREPLY=()
     _get_comp_words_by_ref -n = cur
     opts="--help --add --setdef --list --find --remove"
     res=''
+    first="${COMP_WORDS[1]}"
     if [ $COMP_CWORD -eq 1 ]; then
         case $cur in
             -*)
                 res="$(compgen -W "$opts" | grep -e $cur)"
                 ;;
-            */*)
-                IFS='/' read -r res path <<< $cur;
-
-                ## _goto --find $res | awk '{print $NF}'
-                ## SUBPATH HANDLING
-                ;;
             *)
                 _list_goto_keys
-                compopt -o nospace
+                # compopt -o nospace
                 ;;
         esac;
     else
-        case ${COMP_WORDS[1]} in
+        case $first in
             --help|--list)
                 return 1;
                 ;;
@@ -74,10 +69,17 @@ _goto()
                 fi;
                 _list_goto_keys
                 ;;
+            *)
+                local CDPATH
+                IFS=' ' read -r res CDPATH <<< "$($(which _goto) --find $first)";
+                compopt -o nospace
+                _cd $cur;
+                return 0;
+                ;;
         esac;
     fi;
     COMPREPLY=($(compgen -W "$res"));
     return 0;
 }
 
-complete -F _goto goto
+complete -F _autocomplete_goto goto
