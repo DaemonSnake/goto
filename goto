@@ -138,6 +138,9 @@ function __launch_goto()
     fi;
     user_file=`eval echo $user_file`;
 
+    if [ ! -f $user_file ]; then
+        echo "__DEFAULT__ `echo $user_file | awk -F ".goto_list" '{print $1}'`" >> $user_file
+    fi;
     
     if [ $# -eq 0 ];
     then

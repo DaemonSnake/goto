@@ -28,10 +28,6 @@ function install()
         user_folder="~$SUDO_USER";
     fi;
 
-    grep "__DEFAULT__" $user_folder/.goto_list > /dev/null 2> /dev/null;
-    if [ $? -ne 0 ]; then
-       echo "__DEFAULT__ $user_folder" >> $user_folder/.goto_list;
-    fi;
     sudo cp goto /usr/bin/_goto;
     sudo cp goto.autocomplete /etc/bash_completion.d/goto;
     sudo cp goto_man /usr/local/share/man/man1/goto.1;
