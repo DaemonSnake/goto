@@ -3,7 +3,7 @@ A Unix file system's version of the c-family's goto idiom.
 
 ###SYNOPSIS
 
-       goto [KEY[/SUBPATH]] [--list] [--add KEY [PATH]] [--setdef] [--find KEY] [--remove KEYS...] [--help]
+       goto [KEY[/SUBPATH]] [--list] [--add KEY [PATH]] [--setdef] [--find [-k|-v] KEY] [--remove KEYS...] [--help]
 
 ###DESCRIPTION
 
@@ -34,6 +34,9 @@ A Unix file system's version of the c-family's goto idiom.
                  Equivalent to : --add __DEFAULT__ [PATH]
 
        --find    Lists all keys, along with their values, starting with the given argument.
+                 Options:
+                     -k lists only the keys
+                     -v lists only the paths
 
        --remove  For each argument remove all matching keys after printing them and asking
                  for confirmation.
@@ -42,10 +45,12 @@ A Unix file system's version of the c-family's goto idiom.
 
 ###EXAMPLES
 
+        $ pwd
+        ~/folder/projects
         $ goto --add gotoProject;
         $ mkdir subfolder;
         $ cd;
-        $ goto gotoProject/subfolder;
+        $ goto gotoProject subfolder;
         $ pwd;
         ~/folder/projects/goto/subfolder
         $ goto --setdef;
@@ -58,6 +63,10 @@ A Unix file system's version of the c-family's goto idiom.
         __DEFAULT__
         $ goto --find gotoProj;
         gotoProject /home/user/folder/projects/goto/subfolder
+        $ goto --find -k gotoProj;
+        gotoProject
+        $ goto --find -v gotoProj;
+        /home/user/folder/projects/goto/subfolder
 
 ###SEE ALSO
 

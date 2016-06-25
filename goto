@@ -21,7 +21,24 @@
 
 function __goto_find()
 {
-    grep "^$1" $user_file;
+    local key path
+
+    case "$1" in
+        -*)
+            IFS=' ' read -r key path <<< "$(grep "^$2" $user_file)";
+            case "$1" in
+                -v)
+                    echo $path
+                    ;;
+                -k)
+                    echo $key
+                    ;;
+            esac
+            ;;
+        *)
+            grep "^$1" $user_file;
+            ;;
+    esac
 }
 
 function __goto_remove()
@@ -118,7 +135,7 @@ function __goto_iterate()
             __goto_list
             ;;
         --find)
-            __goto_find "$2"
+            __goto_find $2 $3
             ;;
         --remove)
             __goto_remove "${@:2}"

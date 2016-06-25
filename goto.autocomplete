@@ -1,4 +1,3 @@
-
 # Copyright (C) 2016  Bastien Penavayre
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,15 +20,15 @@
 
 _list_goto_keys()
 {
-    res="$(goto --list | grep -e "$cur")"
+    res="$(goto --list | grep -e "^$cur")"
 }
 
 _autocomplete_goto()
 {
-    local res cur prev opts path first
-    
+    local res cur opts path first prev
+
     COMPREPLY=()
-    _get_comp_words_by_ref -n = cur
+    _get_comp_words_by_ref cur prev
     opts="--help --add --setdef --list --find --remove"
     res=''
     first="${COMP_WORDS[1]}"
@@ -37,6 +36,10 @@ _autocomplete_goto()
         case $cur in
             -*)
                 res="$(compgen -W "$opts" | grep -e $cur)"
+                ;;
+            */*)
+                # echo "not working"
+                return 0;
                 ;;
             *)
                 _list_goto_keys
@@ -64,10 +67,29 @@ _autocomplete_goto()
                 _list_goto_keys
                 ;;
             --find)
-                if [ $COMP_CWORD -ge 3 ]; then
-                    return 1;
-                fi;
-                _list_goto_keys
+                case "$cur" in
+                    -*)
+                        if [ $COMP_CWORD -ge 3 ]; then
+                            return 1;
+                        fi;
+                        res="$(compgen -W "\-v -k" | grep -e $cur)"
+                    ;;
+                    *)
+                        if [ $COMP_CWORD -eq 3 ]; then
+                            case $prev in
+                                -k|-v)
+                                ;;
+                                *)
+                                    return 1;
+                                ;;
+                            esac;
+                        fi;
+                        if [ $COMP_CWORD -ge 4 ]; then
+                            return 1;
+                        fi;
+                        _list_goto_keys
+                    ;;
+                esac
                 ;;
             *)
                 local CDPATH
