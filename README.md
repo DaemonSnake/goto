@@ -3,7 +3,7 @@ A Unix file system's version of the c-family's goto idiom.
 
 ###SYNOPSIS
 
-       goto [KEY[/SUBPATH]] [--list] [--add KEY [PATH]] [--setdef] [--find [-k|-v] KEY] [--remove KEYS...] [--help]
+       goto [KEY [SUBPATH]] [--list] [--add KEY [PATH]] [--setdef] [--find [-k|-v] KEY] [--remove KEYS...] [--help]
 
 ###DESCRIPTION
 
