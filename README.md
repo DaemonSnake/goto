@@ -1,11 +1,11 @@
 # goto
 A Unix file system's version of the c-family's goto idiom.
 
-###SYNOPSIS
+### SYNOPSIS
 
        goto [KEY [SUBPATH]] [--list] [--add KEY [PATH]] [--setdef] [--find [-k|-v] KEY] [--remove KEYS...] [--help]
 
-###DESCRIPTION
+### DESCRIPTION
 
        The  goto  utility  shall  change  the working directory by using the given KEY's associated
        value (by default the key is __DEFAULT__) in its .goto_list file.
@@ -20,7 +20,7 @@ A Unix file system's version of the c-family's goto idiom.
        following alias in the .bashrc of the user:
           alias goto="source _goto"
 
-###OPTIONS
+### OPTIONS
 
        The goto utility supports the following options:
 
@@ -43,7 +43,7 @@ A Unix file system's version of the c-family's goto idiom.
 
        --help    print on the standard output a small description of goto's usage.
 
-###EXAMPLES
+### EXAMPLES
 
         $ pwd
         ~/folder/projects
@@ -68,11 +68,11 @@ A Unix file system's version of the c-family's goto idiom.
         $ goto --find -v gotoProj;
         /home/user/folder/projects/goto/subfolder
 
-###SEE ALSO
+### SEE ALSO
 
        cd(P), sed(1)
 
-###AUTHOR
+### AUTHOR
 
        Bastien Penavayre ( bastienPenava@gmail.com )
 
